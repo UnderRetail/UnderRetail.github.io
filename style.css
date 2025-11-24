@@ -1,278 +1,262 @@
-/* Login Page Styles */
-.login-page {
-    background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
-    min-height: 100vh;
+/* Base Styles */
+:root {
+    --gold: #D4AF37;
+    --gold-light: #F0E68C;
+    --gold-dark: #B8860B;
+    --black: #000000;
+    --dark-gray: #121212;
+    --light-gray: #2A2A2A;
+    --text-light: #F5F5F5;
+    --text-gray: #CCCCCC;
 }
 
-.login-section {
-    padding: 100px 0;
-    display: flex;
-    align-items: center;
-    min-height: 80vh;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.login-container {
-    display: flex;
-    gap: 50px;
-    align-items: center;
-    max-width: 1000px;
+body {
+    background-color: var(--black);
+    color: var(--text-light);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
-.login-card {
-    background: var(--light-gray);
-    padding: 40px;
-    border-radius: 15px;
-    border: 1px solid var(--gold);
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
-    flex: 1;
+section {
+    padding: 80px 0;
 }
 
-.admin-login {
-    border-color: #ff4444;
-    box-shadow: 0 10px 30px rgba(255, 68, 68, 0.2);
+h1, h2, h3, h4 {
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
-.login-card h2 {
+h1 {
+    font-size: 3.5rem;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 2.5rem;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 50px;
+    position: relative;
 }
 
-.login-subtitle {
-    text-align: center;
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+p {
     color: var(--text-gray);
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
-.btn-full {
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--black);
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 15px 30px;
+    background: transparent;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background-color: var(--gold);
+    color: var(--black);
+}
+
+/* Header & Navigation */
+header {
+    background-color: rgba(0, 0, 0, 0.9);
+    position: fixed;
     width: 100%;
-    text-align: center;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.login-links {
+nav {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    align-items: center;
+    padding: 20px 0;
 }
 
-.login-links a {
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
     color: var(--gold);
     text-decoration: none;
 }
 
-.login-info {
-    flex: 1;
-}
-
-.login-info ul {
+.nav-links {
+    display: flex;
     list-style: none;
-}
-
-.login-info li {
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    display: flex;
     align-items: center;
 }
 
-.login-info li i {
+.nav-links li {
+    margin-left: 30px;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
     color: var(--gold);
-    margin-right: 15px;
-    width: 20px;
 }
 
-/* Investor Dashboard Styles */
-.investor-welcome {
-    color: var(--text-gray);
+.mobile-menu {
+    display: none;
+    font-size: 1.5rem;
+    color: var(--gold);
+    cursor: pointer;
 }
 
-.portfolio-grid {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-}
-
-.portfolio-item {
-    background: var(--light-gray);
-    padding: 20px;
-    border-radius: 10px;
-    border-left: 4px solid var(--gold);
+/* Hero Section */
+.hero {
+    height: 100vh;
     display: flex;
-    justify-content: between;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7));
 }
 
-.portfolio-tier {
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-right: 20px;
+.hero-content {
+    max-width: 700px;
+    z-index: 2;
 }
 
-.portfolio-details {
-    flex: 1;
+.hero h1 {
+    margin-bottom: 20px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
-.portfolio-amount {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--gold);
-}
-
-.portfolio-profit {
-    color: #4CAF50;
-    font-size: 0.9rem;
-}
-
-.portfolio-date {
-    color: var(--text-gray);
-    font-size: 0.8rem;
-}
-
-.portfolio-status {
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.status-active {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-}
-
-.status-pending {
-    background: rgba(255, 193, 7, 0.2);
-    color: #FFC107;
-}
-
-/* Referral Styles */
-.referral-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-}
-
-.referral-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.referral-stat {
-    text-align: center;
-    padding: 20px;
-    background: var(--light-gray);
-    border-radius: 10px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-/* Payout Table */
-.payout-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.payout-table th,
-.payout-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Dashboard Sections */
-.dashboard-section {
-    margin: 50px 0;
-}
-
-.dashboard-section h2 {
+.hero p {
+    font-size: 1.2rem;
     margin-bottom: 30px;
-    text-align: left;
+    color: var(--text-gray);
 }
 
-.dashboard-section h2::after {
-    left: 0;
-    transform: none;
-}
-
-/* Admin Dashboard Styles */
-.admin-info {
+.hero-buttons {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 50px;
 }
 
-.last-login {
+.hero-stats {
+    display: flex;
+    gap: 50px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.stat-label {
     color: var(--text-gray);
     font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
+/* How It Works Section */
+.how-it-works {
+    background-color: var(--dark-gray);
 }
 
-.admin-table th,
-.admin-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.admin-table th {
-    background-color: rgba(212, 175, 55, 0.1);
-    color: var(--gold);
-    font-weight: 600;
-}
-
-.btn-small {
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    margin-right: 5px;
-}
-
-.status-vip {
-    background: rgba(229, 228, 226, 0.2);
-    color: #E5E4E2;
-}
-
-.payout-list {
-    margin-top: 15px;
-}
-
-.payout-item {
+.steps {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+    gap: 30px;
 }
 
-.payout-item:last-child {
-    border-bottom: none;
+.step {
+    flex: 1;
+    min-width: 250px;
+    background-color: var(--light-gray);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border-top: 4px solid var(--gold);
+    transition: transform 0.3s ease;
 }
 
-.due-date {
-    color: var(--gold);
-    font-size: 0.8rem;
+.step:hover {
+    transform: translateY(-10px);
 }
 
-.metrics-list {
-    margin-top: 20px;
-}
-
-.metric {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.metric-value {
-    color: var(--gold);
+.step-number {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: var(--gold);
+    color: var(--black);
+    border-radius: 50%;
+    line-height: 50px;
     font-weight: bold;
+    margin-bottom: 20px;
 }
+
+.step h3 {
+    margin-bottom: 15px;
+}
+
+/* Continue with the rest of the CSS from earlier... */
