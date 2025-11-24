@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - UnderRetail</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">UNDERRETAIL</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" id="logoutBtn" class="btn-outline">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Investor Dashboard -->
+    <section class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>My Investment Dashboard</h1>
+                <div class="investor-welcome">
+                    <span>Welcome back, <strong id="investorName">James Wilson</strong></span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Current Balance</h3>
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="card-value">£2,850</div>
+                    <div class="card-change positive">
+                        <i class="fas fa-arrow-up"></i> £450 this month
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Active Investments</h3>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-value">3</div>
+                    <div class="card-change">
+                        Total Value: £5,200
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Next Payout</h3>
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="card-value">15 Nov 2023</div>
+                    <div class="card-change">
+                        Amount: £1,250
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Total ROI</h3>
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="card-value">42.3%</div>
+                    <div class="card-change positive">
+                        <i class="fas fa-arrow-up"></i> +5.2% this cycle
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Portfolio -->
+            <div class="dashboard-section">
+                <h2>My Investment Portfolio</h2>
+                <div class="portfolio-grid">
+                    <div class="portfolio-item">
+                        <div class="portfolio-tier tier-bronze">Bronze</div>
+                        <div class="portfolio-details">
+                            <div class="portfolio-amount">£2,000</div>
+                            <div class="portfolio-profit">+£750 profit</div>
+                            <div class="portfolio-date">Started: 15 Oct 2023</div>
+                        </div>
+                        <div class="portfolio-status status-active">Active</div>
+                    </div>
+
+                    <div class="portfolio-item">
+                        <div class="portfolio-tier tier-silver">Silver</div>
+                        <div class="portfolio-details">
+                            <div class="portfolio-amount">£3,200</div>
+                            <div class="portfolio-profit">+£1,200 profit</div>
+                            <div class="portfolio-date">Started: 22 Oct 2023</div>
+                        </div>
+                        <div class="portfolio-status status-active">Active</div>
+                    </div>
+
+                    <div class="portfolio-item">
+                        <div class="portfolio-tier tier-gold">Gold</div>
+                        <div class="portfolio-details">
+                            <div class="portfolio-amount">£1,500</div>
+                            <div class="portfolio-profit">+£450 profit</div>
+                            <div class="portfolio-date">Started: 05 Nov 2023</div>
+                        </div>
+                        <div class="portfolio-status status-pending">Processing</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral Program -->
+            <div class="dashboard-section">
+                <h2>Referral Program</h2>
+                <div class="referral-content">
+                    <div class="referral-stats">
+                        <div class="referral-stat">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">People Referred</div>
+                        </div>
+                        <div class="referral-stat">
+                            <div class="stat-number">£600</div>
+                            <div class="stat-label">Referral Earnings</div>
+                        </div>
+                        <div class="referral-stat">
+                            <div class="stat-number">5%</div>
+                            <div class="stat-label">Commission Rate</div>
+                        </div>
+                    </div>
+
+                    <div class="referral-form">
+                        <h3>Add New Referral</h3>
+                        <form id="referralForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="refName">Full Name</label>
+                                    <input type="text" id="refName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="refEmail">Email</label>
+                                    <input type="email" id="refEmail" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="refPhone">Phone</label>
+                                    <input type="tel" id="refPhone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="refTier">Investment Tier</label>
+                                    <select id="refTier" required>
+                                        <option value="bronze">Bronze</option>
+                                        <option value="silver">Silver</option>
+                                        <option value="gold">Gold</option>
+                                        <option value="vip">VIP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn">Add Referral</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payout Schedule -->
+            <div class="dashboard-section">
+                <h2>Payout Schedule</h2>
+                <div class="table-container">
+                    <table class="payout-table">
+                        <thead>
+                            <tr>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                                <th>Investment Tier</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15 Nov 2023</td>
+                                <td>£1,250</td>
+                                <td><span class="tier-badge tier-silver">Silver</span></td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>22 Nov 2023</td>
+                                <td>£850</td>
+                                <td><span class="tier-badge tier-bronze">Bronze</span></td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>29 Nov 2023</td>
+                                <td>£950</td>
+                                <td><span class="tier-badge tier-gold">Gold</span></td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Check if investor is logged in
+        if (!localStorage.getItem('investorLoggedIn')) {
+            window.location.href = 'investor-login.html';
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('investorLoggedIn');
+            window.location.href = 'investor-login.html';
+        });
+
+        // Referral form handling
+        document.getElementById('referralForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('refName').value;
+            const email = document.getElementById('refEmail').value;
+            
+            alert(`Referral added successfully!\n\n${name} (${email}) has been added to your referral list.`);
+            this.reset();
+        });
+
+        // Update investor name from email
+        const investorEmail = localStorage.getItem('investorEmail');
+        if (investorEmail) {
+            document.getElementById('investorName').textContent = investorEmail.split('@')[0];
+        }
+    </script>
+</body>
+</html>
