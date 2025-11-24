@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - UnderRetail</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-page">
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">UNDERRETAIL</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Admin Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-card admin-login">
+                    <h2><i class="fas fa-lock"></i> Admin Portal</h2>
+                    <p class="login-subtitle">Restricted Access - Authorized Personnel Only</p>
+                    
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminUsername">Username</label>
+                            <input type="text" id="adminUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Password</label>
+                            <input type="password" id="adminPassword" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin2FA">2FA Code</label>
+                            <input type="text" id="admin2FA" name="twofa" placeholder="000000" required>
+                        </div>
+                        <button type="submit" class="btn btn-full">Access Admin Dashboard</button>
+                    </form>
+                </div>
+                
+                <div class="login-info">
+                    <h3>Admin Features</h3>
+                    <ul>
+                        <li><i class="fas fa-database"></i> Complete business metrics</li>
+                        <li><i class="fas fa-user-cog"></i> Investor management</li>
+                        <li><i class="fas fa-chart-pie"></i> Financial analytics</li>
+                        <li><i class="fas fa-cog"></i> System configuration</li>
+                        <li><i class="fas fa-shield-alt"></i> Security monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Admin login handling
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const twofa = document.getElementById('admin2FA').value;
+            
+            // Demo admin login - in real app, this would have proper authentication
+            if (username === 'admin' && password === 'admin123' && twofa === '123456') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                alert('Invalid admin credentials');
+            }
+        });
+    </script>
+</body>
+</html>
