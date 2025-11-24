@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Gold Investments | Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Base Styles */
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F0E68C;
+            --gold-dark: #B8860B;
+            --black: #000000;
+            --dark-gray: #121212;
+            --light-gray: #2A2A2A;
+            --text-light: #F5F5F5;
+            --text-gray: #CCCCCC;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        
+        p {
+            color: var(--text-gray);
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--black);
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: rgba(0, 0, 0, 0.9);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="black"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23D4AF37" stroke-width="0.5"/></svg>');
+        }
+        
+        .hero-content {
+            max-width: 700px;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--text-gray);
+        }
+        
+        /* Dashboard Section */
+        .dashboard {
+            background-color: var(--dark-gray);
+            padding: 100px 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-title {
+            margin-bottom: 0;
+        }
+        
+        .date-selector {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .date-btn {
+            padding: 8px 15px;
+            background-color: var(--light-gray);
+            color: var(--text-light);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .date-btn.active {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .dashboard-card {
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .card-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .positive {
+            color: #4CAF50;
+        }
+        
+        .negative {
+            color: #F44336;
+        }
+        
+        .chart-container {
+            height: 250px;
+            margin-top: 20px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            color: var(--gold);
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+        
+        .status-paid {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+        
+        .tier-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .tier-bronze {
+            background-color: #CD7F32;
+            color: white;
+        }
+        
+        .tier-silver {
+            background-color: #C0C0C0;
+            color: black;
+        }
+        
+        .tier-gold {
+            background-color: #FFD700;
+            color: black;
+        }
+        
+        .tier-vip {
+            background-color: #E5E4E2;
+            color: black;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-gray);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-column {
+                flex: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">ELITE GOLD</a>
+                <ul class="nav-links">
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#tiers">Tiers</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" class="btn">Apply Now</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Premium Investment Opportunities</h1>
+                <p>Exclusive access to high-yield investment tiers with transparent tracking and premium returns.</p>
+                <a href="#dashboard" class="btn">View Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard" id="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">Admin Dashboard</h2>
+                <div class="date-selector">
+                    <button class="date-btn active">Today</button>
+                    <button class="date-btn">Week</button>
+                    <button class="date-btn">Month</button>
+                    <button class="date-btn">Quarter</button>
+                </div>
+            </div>
+
+            <!-- Section A: Business Performance -->
+            <h3>SECTION A — Business Performance</h3>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Total Sales</h4>
+                        <i class="fas fa-chart-line" style="color: var(--gold);"></i>
+                    </div>
+                    <div class="card-value">$12,540</div>
+                    <div class="card-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% vs last month
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Orders Count</h4>
+                        <i class="fas fa-shopping-cart" style="color: var(--gold);"></i>
+                    </div>
+                    <div class="card-value">432</div>
+                    <div class="card-change positive">
+                        <i class="fas fa-arrow-up"></i> 8% vs last month
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Average Sale Price</h4>
+                        <i class="fas fa-tag" style="color: var(--gold);"></i>
+                    </div>
+                    <div class="card-value">$29.03</div>
+                    <div class="card-change negative">
+                        <i class="fas fa-arrow-down"></i> 2% vs last month
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section B: Investor System -->
+            <h3 style="margin-top: 50px;">SECTION B — Investor System</h3>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Investor Overview</h4>
+                        <i class="fas fa-users" style="color: var(--gold);"></i>
+                    </div>
+                    <div class="card-value">47</div>
+                    <p>Total Investors</p>
+                    <div class="card-value">$248,500</div>
+                    <p>Total Capital Invested</p>
+                    <div class="card-value">$182,300</div>
+                    <p>Total Paid Back</p>
+                    <div class="card-value">$66,200</div>
+                    <p>Outstanding Payouts</p>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Upcoming Payouts</h4>
+                        <i class="fas fa-calendar-alt" style="color: var(--gold);"></i>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Investor</th>
+                                    <th>Amount</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>James Wilson</td>
+                                    <td>$2,500</td>
+                                    <td>15 Nov 2023</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Sarah Johnson</td>
+                                    <td>$1,800</td>
+                                    <td>18 Nov 2023</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Michael Brown</td>
+                                    <td>$3,200</td>
+                                    <td>20 Nov 2023</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Emma Davis</td>
+                                    <td>$2,100</td>
+                                    <td>22 Nov 2023</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Investment Cycle Monitoring</h4>
+                        <i class="fas fa-sync-alt" style="color: var(--gold);"></i>
+                    </div>
+                    <div class="card-value">18 days</div>
+                    <p>Average Time-to-Sale</p>
+                    <div class="card-value">32%</div>
+                    <p>Average Profit Margin</p>
+                    <div class="card-value">147 items</div>
+                    <p>Remaining Inventory Backlog</p>
+                    <div class="chart-container">
+                        <canvas id="cycleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section C: Tier Performance -->
+            <h3 style="margin-top: 50px;">SECTION C — Tier Performance</h3>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h4 class="card-title">Investment Tier ROI</h4>
+                    <i class="fas fa-chart-pie" style="color: var(--gold);"></i>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tier</th>
+                                <th>Investor Pays</th>
+                                <th>Avg Item Sells</th>
+                                <th>Investor Gets</th>
+                                <th>Investor Profit</th>
+                                <th>Your Profit</th>
+                                <th>Cycle Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tier-badge tier-bronze">Bronze</span></td>
+                                <td>£40</td>
+                                <td>£85</td>
+                                <td>£55</td>
+                                <td>£15</td>
+                                <td>£30</td>
+                                <td>3 weeks</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge tier-silver">Silver</span></td>
+                                <td>£55</td>
+                                <td>£100</td>
+                                <td>£80</td>
+                                <td>£25</td>
+                                <td>£20</td>
+                                <td>3 weeks</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge tier-gold">Gold</span></td>
+                                <td>£65</td>
+                                <td>£110</td>
+                                <td>£95</td>
+                                <td>£30</td>
+                                <td>£15</td>
+                                <td>3 weeks</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tier-badge tier-vip">VIP</span></td>
+                                <td>£100+</td>
+                                <td>£200+</td>
+                                <td>£150</td>
+                                <td>£50</td>
+                                <td>£50+</td>
+                                <td>3 weeks</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Elite Gold Investments</h3>
+                    <p>Premium investment opportunities with transparent tracking and exceptional returns.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#tiers">Investment Tiers</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> info@elitegold.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> London, UK</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Elite Gold Investments. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize charts when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const salesChart = new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Oct 1', 'Oct 8', 'Oct 15', 'Oct 22', 'Oct 29', 'Nov 5'],
+                    datasets: [{
+                        label: 'Weekly Sales',
+                        data: [8500, 9200, 10200, 9800, 11200, 12540],
+                        borderColor: '#D4AF37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#CCCCCC'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#CCCCCC'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Orders Chart
+            const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+            const ordersChart = new Chart(ordersCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Oct 1', 'Oct 8', 'Oct 15', 'Oct 22', 'Oct 29', 'Nov 5'],
+                    datasets: [{
+                        label: 'Orders',
+                        data: [320, 380, 410, 390, 420, 432],
+                        backgroundColor: 'rgba(212, 175, 55, 0.7)',
+                        borderColor: '#D4AF37',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#CCCCCC'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#CCCCCC'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Price Chart
+            const priceCtx = document.getElementById('priceChart').getContext('2d');
+            const priceChart = new Chart(priceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Oct 1', 'Oct 8', 'Oct 15', 'Oct 22', 'Oct 29', 'Nov 5'],
+                    datasets: [{
+                        label: 'Average Sale Price',
+                        data: [31.50, 30.20, 29.80, 29.50, 29.20, 29.03],
+                        borderColor: '#D4AF37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#CCCCCC'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#CCCCCC'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Cycle Chart
+            const cycleCtx = document.getElementById('cycleChart').getContext('2d');
+            const cycleChart = new Chart(cycleCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Bronze', 'Silver', 'Gold', 'VIP'],
+                    datasets: [{
+                        data: [40, 30, 20, 10],
+                        backgroundColor: [
+                            '#CD7F32',
+                            '#C0C0C0',
+                            '#FFD700',
+                            '#E5E4E2'
+                        ],
+                        borderColor: '#121212',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#CCCCCC',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Date selector functionality
+            const dateButtons = document.querySelectorAll('.date-btn');
+            dateButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    dateButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    // In a real application, you would update the dashboard data here
+                });
+            });
+        });
+    </script>
+</body>
+</html>
