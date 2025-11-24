@@ -1,11 +1,11 @@
-// Main JavaScript for Elite Gold Investments
+// Main JavaScript for UnderRetail
 
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile Menu Toggle
     const mobileMenu = document.querySelector('.mobile-menu');
     const navLinks = document.querySelector('.nav-links');
     
-    if (mobileMenu) {
+    if (mobileMenu && navLinks) {
         mobileMenu.addEventListener('click', function() {
             navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
         });
@@ -17,17 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
     faqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
         
-        question.addEventListener('click', () => {
-            // Close all other FAQ items
-            faqItems.forEach(otherItem => {
-                if (otherItem !== item) {
-                    otherItem.classList.remove('active');
-                }
+        if (question) {
+            question.addEventListener('click', () => {
+                // Close all other FAQ items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active');
             });
-            
-            // Toggle current item
-            item.classList.toggle('active');
-        });
+        }
     });
 
     // Application Form Handling
@@ -88,26 +90,36 @@ document.addEventListener('DOMContentLoaded', function() {
             amountInput.min = minAmount;
             amountInput.placeholder = `Minimum: £${minAmount}`;
             
-            if (parseInt(amountInput.value) < minAmount) {
+            if (parseInt(amountInput.value) < minAmount || !amountInput.value) {
                 amountInput.value = minAmount;
             }
         });
     }
 
-    // Smooth scrolling for anchor links
+    // FIXED: Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            e.preventDefault();
+            const href = this.getAttribute('href');
             
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 100,
-                    behavior: 'smooth'
-                });
+            // Only prevent default for actual anchor links, not page links
+            if (href !== '#' && !href.includes('.html')) {
+                e.preventDefault();
+                
+                const targetId = href;
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight - 20;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update URL without page refresh
+                    history.pushState(null, null, href);
+                }
             }
         });
     });
@@ -115,11 +127,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Header background on scroll
     window.addEventListener('scroll', function() {
         const header = document.querySelector('header');
-        if (window.scrollY > 100) {
-            header.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
-        } else {
-            header.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        if (header) {
+            if (window.scrollY > 100) {
+                header.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
+            } else {
+                header.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+            }
         }
+    });
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768 && navLinks) {
+                navLinks.style.display = 'none';
+            }
+        });
     });
 });
 
