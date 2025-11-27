@@ -7,87 +7,32 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-    <script>
-// Firebase Application Form Handler
-async function submitInvestmentApplication(formData) {
-    try {
-        const applicationId = 'APP' + Date.now();
-        
-        await db.collection('applications').add({
-            applicationId: applicationId,
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            tier: formData.tier,
-            amount: parseFloat(formData.amount),
-            timestamp: new Date(),
-            status: 'under_review'
-        });
-        
-        console.log('Application saved to Firebase! ID:', applicationId);
-        return applicationId;
-    } catch (error) {
-        console.error('Application error:', error);
-        return null;
-    }
-}
-
-// Application Form Handler
-document.getElementById('applicationForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = {
-        name: document.getElementById('appName').value,
-        email: document.getElementById('appEmail').value,
-        phone: document.getElementById('appPhone').value,
-        tier: document.getElementById('appTier').value,
-        amount: document.getElementById('appAmount').value
-    };
-    
-    const submitBtn = this.querySelector('button');
-    submitBtn.textContent = 'Submitting...';
-    submitBtn.disabled = true;
-    
-    const applicationId = await submitInvestmentApplication(formData);
-    
-    if (applicationId) {
-        alert(`✅ Application submitted successfully!\nYour reference: ${applicationId}\nWe'll contact you within 24 hours.`);
-        this.reset();
-    } else {
-        alert('❌ Error submitting application. Please try again.');
-    }
-    
-    submitBtn.textContent = 'Submit Application';
-    submitBtn.disabled = false;
-});
-
-console.log("Application form handler loaded!");
-</script>
 <body>
     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
-<!-- Your Firebase Configuration -->
-<script>
-  // YOUR EXACT CONFIG - COPY/PASTE THIS
-  const firebaseConfig = {
-    apiKey: "AIzaSyDuOUYMmOqQxkiSn2kAonP6l2eqnzWOwYU",
-    authDomain: "underretail-5faa1.firebaseapp.com",
-    projectId: "underretail-5faa1",
-    storageBucket: "underretail-5faa1.firebasestorage.app",
-    messagingSenderId: "23710024924",
-    appId: "1:23710024924:web:4a54122221372487c42019"
-  };
+    <!-- Your Firebase Configuration -->
+    <script>
+      // YOUR EXACT CONFIG - COPY/PASTE THIS
+      const firebaseConfig = {
+        apiKey: "AIzaSyDuOUYMmOqQxkiSn2kAonP6l2eqnzWOwYU",
+        authDomain: "underretail-5faa1.firebaseapp.com",
+        projectId: "underretail-5faa1",
+        storageBucket: "underretail-5faa1.firebasestorage.app",
+        messagingSenderId: "23710024924",
+        appId: "1:23710024924:web:4a54122221372487c42019"
+      };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-  
-  console.log("Firebase connected successfully!");
-</script>
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
+      
+      console.log("Firebase connected successfully!");
+    </script>
+
     <!-- Header -->
     <header>
         <div class="container">
@@ -319,103 +264,278 @@ console.log("Application form handler loaded!");
         </div>
     </section>
 
- <div class="apply-form">
-    <form id="applicationForm">
-        <div class="form-group">
-            <label for="appName">Full Name</label>
-            <input type="text" id="appName" name="name" required>
+    <!-- Apply Section -->
+    <section class="apply" id="apply">
+        <div class="container">
+            <h2>Ready to Invest?</h2>
+            <div class="apply-content">
+                <div class="apply-text">
+                    <h3>Start Your Investment Journey Today</h3>
+                    <p>Join our network of successful investors and start earning premium returns on your capital.</p>
+                    <div class="apply-features">
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure & Transparent</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Proven Track Record</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-clock"></i>
+                            <span>3-Week Cycles</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="apply-form">
+                    <form id="applicationForm">
+                        <div class="form-group">
+                            <label for="appName">Full Name</label>
+                            <input type="text" id="appName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appEmail">Email Address</label>
+                            <input type="email" id="appEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appPhone">Phone Number</label>
+                            <input type="tel" id="appPhone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appTier">Preferred Tier</label>
+                            <select id="appTier" name="tier" required>
+                                <option value="">Select a tier</option>
+                                <option value="bronze">Bronze (£40)</option>
+                                <option value="silver">Silver (£55)</option>
+                                <option value="gold">Gold (£65)</option>
+                                <option value="vip">VIP (£100+)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="appAmount">Investment Amount</label>
+                            <input type="number" id="appAmount" name="amount" min="40" required>
+                        </div>
+                        <button type="submit" class="btn">Submit Application</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="appEmail">Email Address</label>
-            <input type="email" id="appEmail" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="appPhone">Phone Number</label>
-            <input type="tel" id="appPhone" name="phone" required>
-        </div>
-        <div class="form-group">
-            <label for="appTier">Preferred Tier</label>
-            <select id="appTier" name="tier" required>
-                <option value="">Select a tier</option>
-                <option value="bronze">Bronze (£40)</option>
-                <option value="silver">Silver (£55)</option>
-                <option value="gold">Gold (£65)</option>
-                <option value="vip">VIP (£100+)</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="appAmount">Investment Amount</label>
-            <input type="number" id="appAmount" name="amount" min="40" required>
-        </div>
-        <button type="submit" class="btn">Submit Application</button>
-    </form>
-</div>
+    </section>
 
-   <!-- Contact Form Section -->
-<section class="contact-form-section">
-    <div class="container">
-        <h2>Get In Touch</h2>
-        <p style="text-align: center; margin-bottom: 40px;">Have questions? Send us a message and we'll get back to you within 24 hours.</p>
-        <form id="contactForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="text" id="contactName" name="name" placeholder="Your Name" required>
+    <!-- Contact Form Section -->
+    <section class="contact-form-section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Have questions? Send us a message and we'll get back to you within 24 hours.</p>
+            <form id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="contactName" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="tel" id="contactPhone" name="phone" placeholder="Your Phone Number">
+                    </div>
+                    <div class="form-group">
+                        <select id="contactSubject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="investment">Investment Inquiry</option>
+                            <option value="general">General Question</option>
+                            <option value="support">Technical Support</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
+                    <textarea id="contactMessage" name="message" placeholder="Your Message" rows="5" required></textarea>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="tel" id="contactPhone" name="phone" placeholder="Your Phone Number">
-                </div>
-                <div class="form-group">
-                    <select id="contactSubject" name="subject" required>
-                        <option value="">Select Subject</option>
-                        <option value="investment">Investment Inquiry</option>
-                        <option value="general">General Question</option>
-                        <option value="support">Technical Support</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <textarea id="contactMessage" name="message" placeholder="Your Message" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="btn">Send Message</button>
-        </form>
-    </div>
-</section>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </div>
+    </section>
 
-<!-- Terms Section -->
-<section class="terms-contact">
-    <div class="container">
-        <div class="terms-contact-content">
-            <div class="terms">
-                <h3>Terms & Conditions</h3>
-                <div class="terms-content">
-                    <p>By investing with UnderRetail Investments, you agree to our terms and conditions. All investments are subject to market risks. Past performance is not indicative of future results.</p>
-                    <p>Minimum investment: £40. Maximum investment: No limit. Investment cycles: 3 weeks typical duration. Returns are not guaranteed and depend on successful product sales.</p>
-                    <p>We reserve the right to refuse applications and modify terms without prior notice. All investors must be 18 years or older.</p>
+    <!-- Terms Section -->
+    <section class="terms-contact">
+        <div class="container">
+            <div class="terms-contact-content">
+                <div class="terms">
+                    <h3>Terms & Conditions</h3>
+                    <div class="terms-content">
+                        <p>By investing with UnderRetail Investments, you agree to our terms and conditions. All investments are subject to market risks. Past performance is not indicative of future results.</p>
+                        <p>Minimum investment: £40. Maximum investment: No limit. Investment cycles: 3 weeks typical duration. Returns are not guaranteed and depend on successful product sales.</p>
+                        <p>We reserve the right to refuse applications and modify terms without prior notice. All investors must be 18 years or older.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="contact" id="contact">
-                <h3>Contact Info</h3>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>invest@underretail.co.uk</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+44 20 1234 5678</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>London, United Kingdom</span>
+                <div class="contact" id="contact">
+                    <h3>Contact Info</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>invest@underretail.co.uk</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+44 20 1234 5678</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>London, United Kingdom</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>UnderRetail Investments</h3>
+                    <p>Premium investment opportunities with transparent tracking and exceptional returns.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#tiers">Investment Tiers</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="admin-login.html">Admin Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 UnderRetail Investments. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase Form Handler -->
+    <script>
+    // Firebase Application Form Handler
+    async function submitInvestmentApplication(formData) {
+        try {
+            const applicationId = 'APP' + Date.now();
+            
+            await db.collection('applications').add({
+                applicationId: applicationId,
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                tier: formData.tier,
+                amount: parseFloat(formData.amount),
+                timestamp: new Date(),
+                status: 'under_review'
+            });
+            
+            console.log('Application saved to Firebase! ID:', applicationId);
+            return applicationId;
+        } catch (error) {
+            console.error('Application error:', error);
+            return null;
+        }
+    }
+
+    // Application Form Handler
+    document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('appName').value,
+            email: document.getElementById('appEmail').value,
+            phone: document.getElementById('appPhone').value,
+            tier: document.getElementById('appTier').value,
+            amount: document.getElementById('appAmount').value
+        };
+        
+        const submitBtn = this.querySelector('button');
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.disabled = true;
+        
+        const applicationId = await submitInvestmentApplication(formData);
+        
+        if (applicationId) {
+            alert(`✅ Application submitted successfully!\nYour reference: ${applicationId}\nWe'll contact you within 24 hours.`);
+            this.reset();
+        } else {
+            alert('❌ Error submitting application. Please try again.');
+        }
+        
+        submitBtn.textContent = 'Submit Application';
+        submitBtn.disabled = false;
+    });
+
+    // Contact Form Handler
+    async function submitContactForm(formData) {
+        try {
+            await db.collection('contacts').add({
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone || '',
+                subject: formData.subject,
+                message: formData.message,
+                timestamp: new Date(),
+                status: 'new'
+            });
+            console.log('Contact form saved to Firebase!');
+            return true;
+        } catch (error) {
+            console.error('Contact form error:', error);
+            return false;
+        }
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('contactName').value,
+            email: document.getElementById('contactEmail').value,
+            phone: document.getElementById('contactPhone').value,
+            subject: document.getElementById('contactSubject').value,
+            message: document.getElementById('contactMessage').value
+        };
+        
+        const submitBtn = this.querySelector('button');
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        
+        const success = await submitContactForm(formData);
+        
+        if (success) {
+            alert('✅ Message sent successfully! We\'ll contact you within 24 hours.');
+            this.reset();
+        } else {
+            alert('❌ Error sending message. Please try again.');
+        }
+        
+        submitBtn.textContent = 'Send Message';
+        submitBtn.disabled = false;
+    });
+
+    console.log("All form handlers loaded successfully!");
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
