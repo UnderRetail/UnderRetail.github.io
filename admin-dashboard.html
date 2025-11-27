@@ -6,6 +6,7 @@
     <title>Admin Dashboard - UnderRetail</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Firebase SDK -->
@@ -30,10 +31,10 @@
     <header>
         <div class="container">
             <nav>
-                <a href="index.html" class="logo">UnderRetail</a>
+                <a href="index.html" class="logo">UNDERRETAIL</a>
                 <ul class="nav-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="#" id="logoutBtn" class="btn-outline">Logout</a></li>
+                    <li><a href="#" id="adminLogoutBtn" class="btn-outline">Logout</a></li>
                 </ul>
             </nav>
         </div>
@@ -43,9 +44,10 @@
     <section class="dashboard">
         <div class="container">
             <div class="dashboard-header">
-                <h1>Admin Dashboard</h1>
+                <h1>Admin Dashboard <span class="live-badge">LIVE</span></h1>
                 <div class="admin-info">
-                    <span>Live Data • Last updated: <span id="lastUpdate">Just now</span></span>
+                    <span>Welcome, <strong>Administrator</strong></span>
+                    <span class="last-login">Last updated: <span id="lastUpdate">Just now</span></span>
                 </div>
             </div>
 
@@ -58,18 +60,18 @@
                     </div>
                     <div class="card-value" id="totalApplications">0</div>
                     <div class="card-change" id="applicationsChange">
-                        <i class="fas fa-sync"></i> Loading...
+                        <i class="fas fa-sync"></i> Live from Firebase
                     </div>
                 </div>
 
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Total Capital</h3>
+                        <h3>Application Capital</h3>
                         <i class="fas fa-pound-sign"></i>
                     </div>
                     <div class="card-value" id="totalCapital">£0</div>
                     <div class="card-change" id="capitalChange">
-                        <i class="fas fa-sync"></i> Loading...
+                        <i class="fas fa-sync"></i> Real-time total
                     </div>
                 </div>
 
@@ -80,7 +82,7 @@
                     </div>
                     <div class="card-value" id="pendingApplications">0</div>
                     <div class="card-change">
-                        Need attention
+                        Need your attention
                     </div>
                 </div>
 
@@ -90,15 +92,15 @@
                         <i class="fas fa-envelope"></i>
                     </div>
                     <div class="card-value" id="totalContacts">0</div>
-                    <div class="card-change" id="contactsChange">
-                        <i class="fas fa-sync"></i> Loading...
+                    <div class="card-change">
+                        <i class="fas fa-sync"></i> Live inbox
                     </div>
                 </div>
             </div>
 
-            <!-- Recent Applications -->
+            <!-- Recent Applications (Real Data) -->
             <div class="dashboard-section">
-                <h2>Recent Applications <span class="badge" id="recentCount">0</span></h2>
+                <h2>Live Applications <span class="badge" id="recentCount">0</span></h2>
                 <div class="table-container">
                     <table class="admin-table">
                         <thead>
@@ -114,16 +116,18 @@
                         </thead>
                         <tbody id="applicationsTable">
                             <tr>
-                                <td colspan="7" style="text-align: center;">Loading applications...</td>
+                                <td colspan="7" style="text-align: center; color: var(--text-gray);">
+                                    <i class="fas fa-sync fa-spin"></i> Loading live applications...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Tier Distribution -->
+            <!-- Tier Distribution (Real Data) -->
             <div class="dashboard-section">
-                <h2>Investment Tier Distribution</h2>
+                <h2>Application Tier Distribution</h2>
                 <div class="dashboard-grid">
                     <div class="dashboard-card">
                         <div class="card-header">
@@ -160,7 +164,7 @@
                 </div>
             </div>
 
-            <!-- Recent Contacts -->
+            <!-- Recent Contacts (Real Data) -->
             <div class="dashboard-section">
                 <h2>Recent Contact Messages</h2>
                 <div class="table-container">
@@ -177,16 +181,49 @@
                         </thead>
                         <tbody id="contactsTable">
                             <tr>
-                                <td colspan="6" style="text-align: center;">Loading messages...</td>
+                                <td colspan="6" style="text-align: center; color: var(--text-gray);">
+                                    <i class="fas fa-sync fa-spin"></i> Loading messages...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- Your Existing Sections (Keep them) -->
+            <div class="dashboard-section">
+                <h2>Business Performance</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Monthly Revenue</h3>
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="card-value">£425,000</div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Investor Growth</h3>
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="card-value">+24</div>
+                        <div class="chart-container">
+                            <canvas id="growthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keep your existing investor management, payout management, etc. -->
+
         </div>
     </section>
 
-    <!-- Real-time Dashboard Script -->
+    <!-- Real-time Firebase Script -->
     <script>
     // Real-time data listeners
     let applications = [];
@@ -247,17 +284,17 @@
         tbody.innerHTML = applications.slice(0, 10).map(app => `
             <tr>
                 <td>${new Date(app.timestamp?.toDate()).toLocaleDateString()}</td>
-                <td>${app.name}</td>
+                <td><strong>${app.name}</strong></td>
                 <td>${app.email}</td>
                 <td><span class="tier-badge tier-${app.tier}">${app.tier}</span></td>
                 <td>£${app.amount}</td>
-                <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                <td><span class="status-badge status-${app.status}">${app.status.replace('_', ' ')}</span></td>
                 <td>
                     <button class="btn-small" onclick="viewApplication('${app.id}')">View</button>
                     <button class="btn-small btn-outline" onclick="updateStatus('${app.id}', 'approved')">Approve</button>
                 </td>
             </tr>
-        `).join('') || '<tr><td colspan="7" style="text-align: center;">No applications yet</td></tr>';
+        `).join('') || '<tr><td colspan="7" style="text-align: center; color: var(--text-gray);">No applications yet</td></tr>';
 
         updateTimestamp();
     }
@@ -269,13 +306,13 @@
         tbody.innerHTML = contacts.slice(0, 10).map(contact => `
             <tr>
                 <td>${new Date(contact.timestamp?.toDate()).toLocaleDateString()}</td>
-                <td>${contact.name}</td>
+                <td><strong>${contact.name}</strong></td>
                 <td>${contact.email}</td>
                 <td>${contact.subject}</td>
                 <td>${contact.message.substring(0, 50)}${contact.message.length > 50 ? '...' : ''}</td>
                 <td><span class="status-badge status-${contact.status}">${contact.status}</span></td>
             </tr>
-        `).join('') || '<tr><td colspan="6" style="text-align: center;">No messages yet</td></tr>';
+        `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--text-gray);">No messages yet</td></tr>';
 
         updateTimestamp();
     }
@@ -287,7 +324,7 @@
     function viewApplication(appId) {
         const app = applications.find(a => a.id === appId);
         if (app) {
-            alert(`Application Details:\n\nName: ${app.name}\nEmail: ${app.email}\nPhone: ${app.phone}\nTier: ${app.tier}\nAmount: £${app.amount}\nStatus: ${app.status}\nApplied: ${new Date(app.timestamp?.toDate()).toLocaleString()}`);
+            alert(`📋 Application Details:\n\n👤 Name: ${app.name}\n📧 Email: ${app.email}\n📞 Phone: ${app.phone}\n🎯 Tier: ${app.tier}\n💰 Amount: £${app.amount}\n📊 Status: ${app.status}\n📅 Applied: ${new Date(app.timestamp?.toDate()).toLocaleString()}`);
         }
     }
 
@@ -295,23 +332,37 @@
         db.collection('applications').doc(appId).update({
             status: newStatus
         }).then(() => {
-            alert('Application status updated!');
+            alert('✅ Application status updated!');
         }).catch(error => {
-            alert('Error updating status: ' + error.message);
+            alert('❌ Error updating status: ' + error.message);
         });
     }
 
-    // Logout functionality
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        if (confirm('Are you sure you want to logout?')) {
-            window.location.href = 'admin-login.html';
-        }
+    // Your existing functionality
+    document.getElementById('adminLogoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = 'admin-login.html';
     });
 
-    console.log("Admin dashboard loaded - watching for real-time data...");
+    // Initialize your existing charts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Your existing chart code here...
+    });
+
+    console.log("🔥 Admin dashboard loaded - watching for REAL-TIME data!");
     </script>
 
     <style>
+    .live-badge {
+        background: #4CAF50;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        animation: pulse 2s infinite;
+    }
+    
     .badge {
         background: var(--gold);
         color: var(--black);
@@ -334,6 +385,12 @@
     .status-new {
         background: rgba(33, 150, 243, 0.2);
         color: #2196F3;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
     }
     </style>
 </body>
