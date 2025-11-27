@@ -7,6 +7,62 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+    <script>
+// Firebase Application Form Handler
+async function submitInvestmentApplication(formData) {
+    try {
+        const applicationId = 'APP' + Date.now();
+        
+        await db.collection('applications').add({
+            applicationId: applicationId,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            tier: formData.tier,
+            amount: parseFloat(formData.amount),
+            timestamp: new Date(),
+            status: 'under_review'
+        });
+        
+        console.log('Application saved to Firebase! ID:', applicationId);
+        return applicationId;
+    } catch (error) {
+        console.error('Application error:', error);
+        return null;
+    }
+}
+
+// Application Form Handler
+document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('appName').value,
+        email: document.getElementById('appEmail').value,
+        phone: document.getElementById('appPhone').value,
+        tier: document.getElementById('appTier').value,
+        amount: document.getElementById('appAmount').value
+    };
+    
+    const submitBtn = this.querySelector('button');
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+    
+    const applicationId = await submitInvestmentApplication(formData);
+    
+    if (applicationId) {
+        alert(`✅ Application submitted successfully!\nYour reference: ${applicationId}\nWe'll contact you within 24 hours.`);
+        this.reset();
+    } else {
+        alert('❌ Error submitting application. Please try again.');
+    }
+    
+    submitBtn.textContent = 'Submit Application';
+    submitBtn.disabled = false;
+});
+
+console.log("Application form handler loaded!");
+</script>
 <body>
     <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -263,63 +319,37 @@
         </div>
     </section>
 
-    <!-- Apply Section -->
-    <section class="apply" id="apply">
-        <div class="container">
-            <h2>Ready to Invest?</h2>
-            <div class="apply-content">
-                <div class="apply-text">
-                    <h3>Start Your Investment Journey Today</h3>
-                    <p>Join our network of successful investors and start earning premium returns on your capital.</p>
-                    <div class="apply-features">
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Secure & Transparent</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Proven Track Record</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-clock"></i>
-                            <span>3-Week Cycles</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="apply-form">
-                    <form id="applicationForm">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tier">Preferred Tier</label>
-                            <select id="tier" name="tier" required>
-                                <option value="">Select a tier</option>
-                                <option value="bronze">Bronze (£40)</option>
-                                <option value="silver">Silver (£55)</option>
-                                <option value="gold">Gold (£65)</option>
-                                <option value="vip">VIP (£100+)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="amount">Investment Amount</label>
-                            <input type="number" id="amount" name="amount" min="40" required>
-                        </div>
-                        <button type="submit" class="btn">Submit Application</button>
-                    </form>
-                </div>
-            </div>
+ <div class="apply-form">
+    <form id="applicationForm">
+        <div class="form-group">
+            <label for="appName">Full Name</label>
+            <input type="text" id="appName" name="name" required>
         </div>
-    </section>
+        <div class="form-group">
+            <label for="appEmail">Email Address</label>
+            <input type="email" id="appEmail" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="appPhone">Phone Number</label>
+            <input type="tel" id="appPhone" name="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="appTier">Preferred Tier</label>
+            <select id="appTier" name="tier" required>
+                <option value="">Select a tier</option>
+                <option value="bronze">Bronze (£40)</option>
+                <option value="silver">Silver (£55)</option>
+                <option value="gold">Gold (£65)</option>
+                <option value="vip">VIP (£100+)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="appAmount">Investment Amount</label>
+            <input type="number" id="appAmount" name="amount" min="40" required>
+        </div>
+        <button type="submit" class="btn">Submit Application</button>
+    </form>
+</div>
 
    <!-- Contact Form Section -->
 <section class="contact-form-section">
