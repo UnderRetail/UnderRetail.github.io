@@ -6,17 +6,34 @@
     <title>Admin Dashboard - UnderRetail</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDuOUYMmOqQxkiSn2kAonP6l2eqnzWOwYU",
+        authDomain: "underretail-5faa1.firebaseapp.com",
+        projectId: "underretail-5faa1",
+        storageBucket: "underretail-5faa1.firebasestorage.app",
+        messagingSenderId: "23710024924",
+        appId: "1:23710024924:web:4a54122221372487c42019"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+    </script>
+
     <!-- Header -->
     <header>
         <div class="container">
             <nav>
-                <a href="index.html" class="logo">UNDERRETAIL</a>
+                <a href="index.html" class="logo">UnderRetail</a>
                 <ul class="nav-links">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="#" id="adminLogoutBtn" class="btn-outline">Logout</a></li>
+                    <li><a href="#" id="logoutBtn" class="btn-outline">Logout</a></li>
                 </ul>
             </nav>
         </div>
@@ -28,21 +45,20 @@
             <div class="dashboard-header">
                 <h1>Admin Dashboard</h1>
                 <div class="admin-info">
-                    <span>Welcome, <strong>Administrator</strong></span>
-                    <span class="last-login">Last login: Today, 14:32</span>
+                    <span>Live Data • Last updated: <span id="lastUpdate">Just now</span></span>
                 </div>
             </div>
 
-            <!-- Quick Stats -->
+            <!-- Real-time Stats -->
             <div class="dashboard-grid">
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Total Investors</h3>
-                        <i class="fas fa-users"></i>
+                        <h3>Total Applications</h3>
+                        <i class="fas fa-file-alt"></i>
                     </div>
-                    <div class="card-value">324</div>
-                    <div class="card-change positive">
-                        <i class="fas fa-arrow-up"></i> +24 this month
+                    <div class="card-value" id="totalApplications">0</div>
+                    <div class="card-change" id="applicationsChange">
+                        <i class="fas fa-sync"></i> Loading...
                     </div>
                 </div>
 
@@ -51,317 +67,274 @@
                         <h3>Total Capital</h3>
                         <i class="fas fa-pound-sign"></i>
                     </div>
-                    <div class="card-value">£2.4M</div>
-                    <div class="card-change positive">
-                        <i class="fas fa-arrow-up"></i> £450K this month
+                    <div class="card-value" id="totalCapital">£0</div>
+                    <div class="card-change" id="capitalChange">
+                        <i class="fas fa-sync"></i> Loading...
                     </div>
                 </div>
 
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Active Cycles</h3>
-                        <i class="fas fa-sync-alt"></i>
+                        <h3>Pending Review</h3>
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <div class="card-value">147</div>
+                    <div class="card-value" id="pendingApplications">0</div>
                     <div class="card-change">
-                        Completion: 68%
+                        Need attention
                     </div>
                 </div>
 
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Total Profit</h3>
-                        <i class="fas fa-chart-line"></i>
+                        <h3>Contact Messages</h3>
+                        <i class="fas fa-envelope"></i>
                     </div>
-                    <div class="card-value">£892K</div>
-                    <div class="card-change positive">
-                        <i class="fas fa-arrow-up"></i> 37% margin
-                    </div>
-                </div>
-            </div>
-
-            <!-- Business Performance -->
-            <div class="dashboard-section">
-                <h2>Business Performance</h2>
-                <div class="dashboard-grid">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>Monthly Revenue</h3>
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                        <div class="card-value">£425,000</div>
-                        <div class="chart-container">
-                            <canvas id="revenueChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>Investor Growth</h3>
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="card-value">+24</div>
-                        <div class="chart-container">
-                            <canvas id="growthChart"></canvas>
-                        </div>
+                    <div class="card-value" id="totalContacts">0</div>
+                    <div class="card-change" id="contactsChange">
+                        <i class="fas fa-sync"></i> Loading...
                     </div>
                 </div>
             </div>
 
-            <!-- Investor Management -->
+            <!-- Recent Applications -->
             <div class="dashboard-section">
-                <h2>Investor Management</h2>
+                <h2>Recent Applications <span class="badge" id="recentCount">0</span></h2>
                 <div class="table-container">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Investor ID</th>
+                                <th>Date</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Total Invested</th>
-                                <th>Active Cycles</th>
+                                <th>Tier</th>
+                                <th>Amount</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="applicationsTable">
                             <tr>
-                                <td>#INV001</td>
-                                <td>James Wilson</td>
-                                <td>james@email.com</td>
-                                <td>£12,500</td>
-                                <td>3</td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>
-                                    <button class="btn-small">View</button>
-                                    <button class="btn-small btn-outline">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#INV002</td>
-                                <td>Sarah Johnson</td>
-                                <td>sarah@email.com</td>
-                                <td>£8,200</td>
-                                <td>2</td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>
-                                    <button class="btn-small">View</button>
-                                    <button class="btn-small btn-outline">Edit</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#INV003</td>
-                                <td>Michael Brown</td>
-                                <td>michael@email.com</td>
-                                <td>£25,000</td>
-                                <td>5</td>
-                                <td><span class="status-badge status-vip">VIP</span></td>
-                                <td>
-                                    <button class="btn-small">View</button>
-                                    <button class="btn-small btn-outline">Edit</button>
-                                </td>
+                                <td colspan="7" style="text-align: center;">Loading applications...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Payout Management -->
+            <!-- Tier Distribution -->
             <div class="dashboard-section">
-                <h2>Payout Management</h2>
+                <h2>Investment Tier Distribution</h2>
                 <div class="dashboard-grid">
                     <div class="dashboard-card">
                         <div class="card-header">
-                            <h3>Pending Payouts</h3>
-                            <i class="fas fa-clock"></i>
+                            <h3>Bronze Tier</h3>
+                            <span class="tier-badge tier-bronze">Bronze</span>
                         </div>
-                        <div class="card-value">£86,500</div>
-                        <div class="payout-list">
-                            <div class="payout-item">
-                                <span>James Wilson</span>
-                                <span>£2,500</span>
-                                <span class="due-date">Due: 15 Nov</span>
-                            </div>
-                            <div class="payout-item">
-                                <span>Sarah Johnson</span>
-                                <span>£1,800</span>
-                                <span class="due-date">Due: 18 Nov</span>
-                            </div>
-                            <div class="payout-item">
-                                <span>Michael Brown</span>
-                                <span>£3,200</span>
-                                <span class="due-date">Due: 20 Nov</span>
-                            </div>
-                        </div>
+                        <div class="card-value" id="bronzeCount">0</div>
+                        <div class="card-value" id="bronzeAmount">£0</div>
                     </div>
-
                     <div class="dashboard-card">
                         <div class="card-header">
-                            <h3>Process Payout</h3>
-                            <i class="fas fa-paper-plane"></i>
+                            <h3>Silver Tier</h3>
+                            <span class="tier-badge tier-silver">Silver</span>
                         </div>
-                        <form id="payoutForm">
-                            <div class="form-group">
-                                <label for="payoutInvestor">Select Investor</label>
-                                <select id="payoutInvestor" required>
-                                    <option value="">Choose investor...</option>
-                                    <option value="INV001">James Wilson</option>
-                                    <option value="INV002">Sarah Johnson</option>
-                                    <option value="INV003">Michael Brown</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="payoutAmount">Amount (£)</label>
-                                <input type="number" id="payoutAmount" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="payoutDate">Payment Date</label>
-                                <input type="date" id="payoutDate" required>
-                            </div>
-                            <button type="submit" class="btn">Process Payment</button>
-                        </form>
+                        <div class="card-value" id="silverCount">0</div>
+                        <div class="card-value" id="silverAmount">£0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Gold Tier</h3>
+                            <span class="tier-badge tier-gold">Gold</span>
+                        </div>
+                        <div class="card-value" id="goldCount">0</div>
+                        <div class="card-value" id="goldAmount">£0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>VIP Tier</h3>
+                            <span class="tier-badge tier-vip">VIP</span>
+                        </div>
+                        <div class="card-value" id="vipCount">0</div>
+                        <div class="card-value" id="vipAmount">£0</div>
                     </div>
                 </div>
             </div>
 
-            <!-- System Analytics -->
+            <!-- Recent Contacts -->
             <div class="dashboard-section">
-                <h2>System Analytics</h2>
-                <div class="dashboard-grid">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>Tier Distribution</h3>
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="tierChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>Performance Metrics</h3>
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        <div class="metrics-list">
-                            <div class="metric">
-                                <span>Avg. ROI</span>
-                                <span class="metric-value">42.3%</span>
-                            </div>
-                            <div class="metric">
-                                <span>Cycle Success Rate</span>
-                                <span class="metric-value">94.7%</span>
-                            </div>
-                            <div class="metric">
-                                <span>Avg. Cycle Time</span>
-                                <span class="metric-value">18 days</span>
-                            </div>
-                            <div class="metric">
-                                <span>Customer Satisfaction</span>
-                                <span class="metric-value">4.8/5.0</span>
-                            </div>
-                        </div>
-                    </div>
+                <h2>Recent Contact Messages</h2>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Loading messages...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Real-time Dashboard Script -->
     <script>
-        // Check if admin is logged in
-        if (!localStorage.getItem('adminLoggedIn')) {
+    // Real-time data listeners
+    let applications = [];
+    let contacts = [];
+
+    // Listen for new applications
+    db.collection('applications')
+        .orderBy('timestamp', 'desc')
+        .onSnapshot((snapshot) => {
+            applications = [];
+            snapshot.forEach(doc => {
+                applications.push({ id: doc.id, ...doc.data() });
+            });
+            updateApplicationsDashboard();
+        });
+
+    // Listen for new contacts
+    db.collection('contacts')
+        .orderBy('timestamp', 'desc')
+        .onSnapshot((snapshot) => {
+            contacts = [];
+            snapshot.forEach(doc => {
+                contacts.push({ id: doc.id, ...doc.data() });
+            });
+            updateContactsDashboard();
+        });
+
+    function updateApplicationsDashboard() {
+        // Update counters
+        document.getElementById('totalApplications').textContent = applications.length;
+        document.getElementById('pendingApplications').textContent = applications.filter(app => app.status === 'under_review').length;
+        document.getElementById('recentCount').textContent = applications.length;
+
+        // Calculate total capital
+        const totalCapital = applications.reduce((sum, app) => sum + (app.amount || 0), 0);
+        document.getElementById('totalCapital').textContent = `£${totalCapital}`;
+
+        // Update tier distribution
+        const bronzeApps = applications.filter(app => app.tier === 'bronze');
+        const silverApps = applications.filter(app => app.tier === 'silver');
+        const goldApps = applications.filter(app => app.tier === 'gold');
+        const vipApps = applications.filter(app => app.tier === 'vip');
+
+        document.getElementById('bronzeCount').textContent = bronzeApps.length;
+        document.getElementById('bronzeAmount').textContent = `£${bronzeApps.reduce((sum, app) => sum + (app.amount || 0), 0)}`;
+        
+        document.getElementById('silverCount').textContent = silverApps.length;
+        document.getElementById('silverAmount').textContent = `£${silverApps.reduce((sum, app) => sum + (app.amount || 0), 0)}`;
+        
+        document.getElementById('goldCount').textContent = goldApps.length;
+        document.getElementById('goldAmount').textContent = `£${goldApps.reduce((sum, app) => sum + (app.amount || 0), 0)}`;
+        
+        document.getElementById('vipCount').textContent = vipApps.length;
+        document.getElementById('vipAmount').textContent = `£${vipApps.reduce((sum, app) => sum + (app.amount || 0), 0)}`;
+
+        // Update applications table
+        const tbody = document.getElementById('applicationsTable');
+        tbody.innerHTML = applications.slice(0, 10).map(app => `
+            <tr>
+                <td>${new Date(app.timestamp?.toDate()).toLocaleDateString()}</td>
+                <td>${app.name}</td>
+                <td>${app.email}</td>
+                <td><span class="tier-badge tier-${app.tier}">${app.tier}</span></td>
+                <td>£${app.amount}</td>
+                <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                <td>
+                    <button class="btn-small" onclick="viewApplication('${app.id}')">View</button>
+                    <button class="btn-small btn-outline" onclick="updateStatus('${app.id}', 'approved')">Approve</button>
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="7" style="text-align: center;">No applications yet</td></tr>';
+
+        updateTimestamp();
+    }
+
+    function updateContactsDashboard() {
+        document.getElementById('totalContacts').textContent = contacts.length;
+        
+        const tbody = document.getElementById('contactsTable');
+        tbody.innerHTML = contacts.slice(0, 10).map(contact => `
+            <tr>
+                <td>${new Date(contact.timestamp?.toDate()).toLocaleDateString()}</td>
+                <td>${contact.name}</td>
+                <td>${contact.email}</td>
+                <td>${contact.subject}</td>
+                <td>${contact.message.substring(0, 50)}${contact.message.length > 50 ? '...' : ''}</td>
+                <td><span class="status-badge status-${contact.status}">${contact.status}</span></td>
+            </tr>
+        `).join('') || '<tr><td colspan="6" style="text-align: center;">No messages yet</td></tr>';
+
+        updateTimestamp();
+    }
+
+    function updateTimestamp() {
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+    }
+
+    function viewApplication(appId) {
+        const app = applications.find(a => a.id === appId);
+        if (app) {
+            alert(`Application Details:\n\nName: ${app.name}\nEmail: ${app.email}\nPhone: ${app.phone}\nTier: ${app.tier}\nAmount: £${app.amount}\nStatus: ${app.status}\nApplied: ${new Date(app.timestamp?.toDate()).toLocaleString()}`);
+        }
+    }
+
+    function updateStatus(appId, newStatus) {
+        db.collection('applications').doc(appId).update({
+            status: newStatus
+        }).then(() => {
+            alert('Application status updated!');
+        }).catch(error => {
+            alert('Error updating status: ' + error.message);
+        });
+    }
+
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to logout?')) {
             window.location.href = 'admin-login.html';
         }
+    });
 
-        // Logout functionality
-        document.getElementById('adminLogoutBtn').addEventListener('click', function() {
-            localStorage.removeItem('adminLoggedIn');
-            window.location.href = 'admin-login.html';
-        });
-
-        // Payout form handling
-        document.getElementById('payoutForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const investor = document.getElementById('payoutInvestor').value;
-            const amount = document.getElementById('payoutAmount').value;
-            const date = document.getElementById('payoutDate').value;
-            
-            alert(`Payout processed successfully!\n\nInvestor: ${investor}\nAmount: £${amount}\nDate: ${date}`);
-            this.reset();
-        });
-
-        // Initialize charts
-        document.addEventListener('DOMContentLoaded', function() {
-            // Revenue Chart
-            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-            new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
-                    datasets: [{
-                        label: 'Monthly Revenue',
-                        data: [280, 320, 350, 380, 410, 390, 420, 450, 480, 510, 425],
-                        borderColor: '#D4AF37',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' } }
-                    }
-                }
-            });
-
-            // Growth Chart
-            const growthCtx = document.getElementById('growthChart').getContext('2d');
-            new Chart(growthCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
-                    datasets: [{
-                        label: 'New Investors',
-                        data: [18, 22, 25, 28, 32, 30, 35, 38, 42, 45, 24],
-                        backgroundColor: 'rgba(212, 175, 55, 0.7)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' } }
-                    }
-                }
-            });
-
-            // Tier Distribution Chart
-            const tierCtx = document.getElementById('tierChart').getContext('2d');
-            new Chart(tierCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Bronze', 'Silver', 'Gold', 'VIP'],
-                    datasets: [{
-                        data: [45, 30, 15, 10],
-                        backgroundColor: ['#CD7F32', '#C0C0C0', '#FFD700', '#E5E4E2']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
-        });
+    console.log("Admin dashboard loaded - watching for real-time data...");
     </script>
+
+    <style>
+    .badge {
+        background: var(--gold);
+        color: var(--black);
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+    }
+    
+    .status-under_review {
+        background: rgba(255, 193, 7, 0.2);
+        color: #FFC107;
+    }
+    
+    .status-approved {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+    }
+    
+    .status-new {
+        background: rgba(33, 150, 243, 0.2);
+        color: #2196F3;
+    }
+    </style>
 </body>
 </html>
